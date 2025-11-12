@@ -3,6 +3,7 @@ import { useState, FormEvent, useRef } from 'react';
 import { Users, CheckCircle, Loader2, Upload } from 'lucide-react'; 
 import { TeamMember, Team } from '../types';
 
+
 export default function Register() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -101,7 +102,7 @@ export default function Register() {
 
     try {
         // NOTE: We use the basic fetch API directly for file upload.
-        const response = await fetch('http://localhost:3000/api/teams', {
+        const response = await fetch('https://sdc-hackathon-2-0.onrender.com/teams', {
             method: 'POST',
             body: formDataPayload, // Pass FormData directly, without Content-Type header
         });
