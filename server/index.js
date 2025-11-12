@@ -27,7 +27,7 @@ mongoose.connect(MONGODB_URI)
 
 // --- API Routes ---
 app.use('/api/auth', authRoutes);
-app.use('/api/teams', teamsRoutes);
+app.use('/api/teams', teamsRoutes); 
 app.use('/api/contact', contactRoutes);
 
 app.listen(PORT, () => {
