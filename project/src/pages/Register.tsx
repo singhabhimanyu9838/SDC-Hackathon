@@ -1,8 +1,9 @@
-// src/pages/Register.tsx - FINAL FIXED CODE FOR MONGO DB MIGRATION
 import { useState, FormEvent, useRef } from 'react';
 import { Users, CheckCircle, Loader2, Upload } from 'lucide-react'; 
 import { TeamMember, Team } from '../types';
 
+// NOTE: We do not use the VITE_API_BASE_URL environment variable here 
+// because we are using a direct fetch, but we MUST use the correct address.
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -71,19 +72,19 @@ export default function Register() {
         setLoading(false);
         return;
     }
-    
-    // --- MAPPING STATE KEYS TO MONGOOSE SCHEMA KEYS ---
-    const fieldMapping = {
-        teamName: 'team_name',
-        teamLeaderName: 'team_leader_name',
-        email: 'email',
-        phone: 'phone',
-        collegeName: 'college_name',
-        projectIdea: 'project_idea',
-        githubLink: 'github_link',
-        linkedinLink: 'linkedin_link',
-    };
-    // ----------------------------------------------------
+    
+    // --- MAPPING STATE KEYS TO MONGOOSE SCHEMA KEYS ---
+    const fieldMapping = {
+        teamName: 'team_name',
+        teamLeaderName: 'team_leader_name',
+        email: 'email',
+        phone: 'phone',
+        collegeName: 'college_name',
+        projectIdea: 'project_idea',
+        githubLink: 'github_link',
+        linkedinLink: 'linkedin_link',
+    };
+    // ----------------------------------------------------
     
     // --- CONVERTING TO FormData for File Upload ---
     const formDataPayload = new FormData();
@@ -93,27 +94,19 @@ export default function Register() {
 
     // 🔑 CRITICAL FIX: Iterate over formData and append using the snake_case key
     Object.entries(formData).forEach(([camelKey, value]) => {
-        const snakeKey = fieldMapping[camelKey as keyof typeof fieldMapping];
+        const snakeKey = fieldMapping[camelKey as keyof typeof fieldMapping];
         formDataPayload.append(snakeKey, value);
     });
 
     // Append team members as a JSON string
     formDataPayload.append('team_members', JSON.stringify(teamMembers.filter(m => m.name && m.email)));
 
-//     try {
-//         // NOTE: We use the basic fetch API directly for file upload.
-//         const response = await fetch('http://localhost:3000/api/teams', {
-//             method: 'POST',
-//             body: formDataPayload, // Pass FormData directly, without Content-Type header
-//         });
-
-     try {
-        // NOTE: We use the basic fetch API directly for file upload.
-        const response = await fetch('https://sdc-hackathon-2-2.onrender.com/api/teams', {
+    try {
+        // 🛑 FINAL DEPLOYMENT FIX: Use the correct backend URL
+        const response = await fetch('https://sdc-hackathon-2-0.onrender.com/api/teams', {
             method: 'POST',
             body: formDataPayload, // Pass FormData directly, without Content-Type header
         });
-
 
         if (!response.ok) {
             const errorData = await response.json();
@@ -285,7 +278,7 @@ export default function Register() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Team Members (up to 3 additional members)
                 </label>
                 {teamMembers.length < 3 && (
@@ -417,7 +410,7 @@ export default function Register() {
             </button>
           </div>
         </form>
-      </div>
+        </div>
     </div>
   );
 }
