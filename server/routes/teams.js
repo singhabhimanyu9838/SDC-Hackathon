@@ -6,13 +6,13 @@ const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { sendRegistrationConfirmation } = require('../services/emailService'); // <-- CRITICAL IMPORT ADDED
+const { sendRegistrationConfirmation } = require('../services/emailService'); 
 
 const router = express.Router();
 
 const generateRegistrationId = () => { return `SDC-HACK-${Date.now()}`; };
 
-// --- Multer Configuration ---
+// --- Multer Configuration: DISK STORAGE ---
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const uploadPath = path.join(__dirname, '..', 'uploads');
@@ -38,22 +38,21 @@ const upload = multer({
         }
     }
 });
-// -----------------------------
+// -----------------------------------------------------------------------
 
 
-// POST /api/teams - PUBLIC: Create a new team registration
+// POST /api/teams - PUBLIC: Create a new team registration (Fixed for Deployment Timeout)
 router.post('/', upload.single('ideaPptFile'), async (req, res) => {
     let uploadedFilePath = req.file ? req.file.path : null;
     
     try {
         const teamData = req.body;
         
-        // 1. VALIDATE FILE UPLOAD
+        // 1. VALIDATION AND PARSING
         if (!req.file) {
             return res.status(400).json({ message: 'Project Idea Document (PDF) is required.' });
         }
         
-        // 2. CRITICAL FIX: PARSE JSON STRING FIELDS
         if (teamData.team_members && typeof teamData.team_members === 'string') {
             try {
                 teamData.team_members = JSON.parse(teamData.team_members);
@@ -64,22 +63,23 @@ router.post('/', upload.single('ideaPptFile'), async (req, res) => {
             teamData.team_members = []; 
         }
 
-        // 3. Populate MongoDB fields
+        // 2. Populate MongoDB fields
         teamData.idea_ppt_path = uploadedFilePath; 
         teamData.registration_id = generateRegistrationId();
         
-        // 4. Save to MongoDB
+        // 3. Save to MongoDB (Must await the save)
         const newTeam = new Team(teamData);
         await newTeam.save();
 
-        // 🔑 5. SEND CONFIRMATION EMAIL (Non-blocking trigger)
+        // 🔑 4. NON-BLOCKING EMAIL: Trigger the email without 'await'. This is the fix 
+        // for the submission timeout error (it runs in the background).
         sendRegistrationConfirmation(
             newTeam.email, 
             newTeam.team_name, 
             newTeam.registration_id
         ); 
 
-        res.status(201).json(newTeam.toJSON());
+        res.status(201).json(newTeam.toJSON()); // Respond instantly
 
     } catch (error) {
         // ⚠️ CRITICAL CLEANUP: Delete the uploaded file if DB save fails

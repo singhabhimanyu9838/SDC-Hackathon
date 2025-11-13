@@ -1,17 +1,21 @@
 const nodemailer = require('nodemailer');
 
-// 1. Create a transporter object using the SMTP configuration
+// --- Configuration: Uses Render Environment Variables ---
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: process.env.SMTP_PORT === '465', // true for 465, false for other ports
+    host: process.env.SMTP_HOST, // e.g., smtp-relay.sendinblue.com
+    port: process.env.SMTP_PORT, // e.g., 587
+    secure: process.env.SMTP_PORT === '465', // Checks if SSL is needed
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_USER, // Brevo SID
+        pass: process.env.SMTP_PASS, // Brevo Secret
     },
 });
 
-// 2. Define the main function to send the confirmation email
+/**
+ * Sends a registration confirmation email.
+ * This function is designed to be called asynchronously (without 'await') 
+ * so it does not block the main HTTP response thread.
+ */
 const sendRegistrationConfirmation = async (recipientEmail, teamName, registrationId) => {
     
     const mailOptions = {
@@ -19,10 +23,8 @@ const sendRegistrationConfirmation = async (recipientEmail, teamName, registrati
         to: recipientEmail,
         subject: `🎉 Registration Confirmed: SDC Hackathon 2025 - ${teamName}`,
         
-        // Plain text content for compatibility
         text: `Hello ${teamName},\n\nThank you for registering for the SDC Hackathon 2025!\n\nYour Registration ID is: ${registrationId}\n\nWe look forward to seeing your innovative project! Visit the hackathon page for the schedule.\n\nBest regards,\nThe SDC Team`,
         
-        // HTML content for aesthetic display
         html: `
             <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                 <h2 style="color: #4c51bf;">Registration Confirmed!</h2>
@@ -35,7 +37,6 @@ const sendRegistrationConfirmation = async (recipientEmail, teamName, registrati
                 </div>
                 
                 <p>We've received your team details and your Project Idea Document. Please keep your Registration ID safe.</p>
-                <p>Visit our <a href="http://localhost:5173/hackathon" style="color: #4c51bf;">Hackathon Schedule Page</a> for the latest updates.</p>
                 <p>Best regards,<br>The SDC Team</p>
             </div>
         `,
@@ -46,7 +47,8 @@ const sendRegistrationConfirmation = async (recipientEmail, teamName, registrati
         console.log(`[Email] Confirmation sent to ${recipientEmail}`);
         return { success: true };
     } catch (error) {
-        console.error(`[Email] Failed to send confirmation to ${recipientEmail}:`, error);
+        // CRITICAL: Log the failure without stopping the server.
+        console.error(`[Email] FAILED to send confirmation to ${recipientEmail}. Nodemailer Error:`, error.message);
         return { success: false, error: error.message };
     }
 };
