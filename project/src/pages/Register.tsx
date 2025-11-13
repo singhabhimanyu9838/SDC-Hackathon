@@ -100,12 +100,20 @@ export default function Register() {
     // Append team members as a JSON string
     formDataPayload.append('team_members', JSON.stringify(teamMembers.filter(m => m.name && m.email)));
 
-    try {
+//     try {
+//         // NOTE: We use the basic fetch API directly for file upload.
+//         const response = await fetch('http://localhost:3000/api/teams', {
+//             method: 'POST',
+//             body: formDataPayload, // Pass FormData directly, without Content-Type header
+//         });
+
+     try {
         // NOTE: We use the basic fetch API directly for file upload.
         const response = await fetch('https://sdc-hackathon-2-2.onrender.com/api/teams', {
             method: 'POST',
             body: formDataPayload, // Pass FormData directly, without Content-Type header
         });
+
 
         if (!response.ok) {
             const errorData = await response.json();
