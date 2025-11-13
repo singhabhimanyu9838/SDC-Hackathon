@@ -12,7 +12,8 @@ import {
   Phone,
   Building2,
   Code2,
-  FileText 
+  FileText, 
+  Link // Icon for links
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiRequest } from '../lib/api';
@@ -78,71 +79,10 @@ export default function AdminDashboard() {
     }
   };
 
-  // --- FINAL FIX: Handles authenticated file download via Fetch/Blob ---
-  const handleDownload = async (downloadUrl: string) => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        alert('Authentication token missing. Please log in again.');
-        return;
-    }
-
-    // Constructs the full URL to the backend's download endpoint
-    const fullUrl = `http://localhost:3000${downloadUrl}`;
-    
-    try {
-        const response = await fetch(fullUrl, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`, // Essential for security
-            },
-        });
-
-        if (!response.ok) {
-            // Detailed error handling for better user feedback
-            if (response.status === 404) {
-                throw new Error("File not found on server.");
-            }
-            if (response.status === 401 || response.status === 403) {
-                throw new Error("Unauthorized access. Please log in.");
-            }
-            throw new Error(`Download failed with status: ${response.status}`);
-        }
-
-        // Process the file blob
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        
-        // Use Content-Disposition header (sent by backend) to determine filename 
-        const disposition = response.headers.get('Content-Disposition');
-        let filename = 'project_idea.pdf';
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-            const filenameRegex = /filename="?(.+)"?/;
-            const matches = filenameRegex.exec(disposition);
-            if (matches && matches[1]) {
-                filename = matches[1].replace(/['"]/g, '');
-            }
-        }
-
-        a.href = url;
-        a.download = filename;
-        
-        // Trigger the download synchronously inside the click handler to avoid security block
-        document.body.appendChild(a);
-        a.click();
-        
-        // Clean up the element and URL object
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        
-    } catch (error) {
-        console.error('Download Error:', error);
-        alert(`Download failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  };
-  // -----------------------------------------------------
+  // The handleDownload function and all complex file logic have been removed.
 
   const exportToCSV = () => {
+    // Updated headers for the new link field
     const headers = [
       'Registration ID',
       'Team Name',
@@ -151,7 +91,7 @@ export default function AdminDashboard() {
       'Phone',
       'College',
       'Project Idea',
-      'Project PPT Path', // Include the file path in CSV export
+      'Project Idea Link', // Uses the link field
       'Team Members',
       'GitHub',
       'LinkedIn',
@@ -166,7 +106,7 @@ export default function AdminDashboard() {
       team.phone,
       team.college_name,
       team.project_idea,
-      team.idea_ppt_path || '', // CSV field for the file path
+      team.idea_ppt_link || '', // Use the new idea_ppt_link field
       team.team_members.map((m) => `${m.name} (${m.email})`).join('; '),
       team.github_link || '',
       team.linkedin_link || '',
@@ -209,7 +149,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className={`text-4xl font-bold text-gray-900 dark:text-white mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent`}>
               Admin Dashboard
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
@@ -369,23 +309,25 @@ export default function AdminDashboard() {
                             {team.project_idea}
                           </p>
                         </div>
-                        
-                        {/* --- DOWNLOAD BUTTON --- */}
-                        {team.idea_ppt_download_url && (
-                            <div className="mb-4">
-                                <button
-                                    onClick={() => handleDownload(team.idea_ppt_download_url!)} 
-                                    className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-semibold"
-                                >
-                                    <FileText className="h-4 w-4 mr-2" />
-                                    Download Idea PDF
-                                </button>
-                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    File: {team.idea_ppt_path ? team.idea_ppt_path.split(/[\\/]/).pop() : 'N/A'}
+                        
+                        {/* --- DOWNLOAD LINK --- */}
+                        {team.idea_ppt_download_url && (
+                            <div className="mb-4">
+                                <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Project Document Link:
                                 </p>
-                            </div>
-                        )}
-                        {/* --- END DOWNLOAD BUTTON --- */}
+                                <a
+                                  href={team.idea_ppt_download_url} 
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-semibold"
+                                >
+                                    <Link className="h-4 w-4 mr-2" />
+                                    View Document
+                                </a>
+                            </div>
+                        )}
+                        {/* --- END DOWNLOAD BUTTON --- */}
 
                         <div className="flex flex-wrap gap-4 text-sm">
                           {team.github_link && (
@@ -432,7 +374,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
-      </div>
-    </div>
+        </div>
+      </div>  
   );
 }

@@ -1,4 +1,3 @@
-// server/models/Team.js
 const mongoose = require('mongoose');
 
 const TeamMemberSchema = new mongoose.Schema({
@@ -13,11 +12,17 @@ const TeamSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     college_name: { type: String, required: true },
     project_idea: { type: String, required: true },
-    idea_ppt_path: { type: String, default: '' },
+    
+    // 🔑 CHANGE: Storing a simple URL link
+    idea_ppt_link: { type: String, default: '' }, 
+    
     team_members: { type: [TeamMemberSchema], default: [] }, 
+    
     github_link: { type: String, default: '' },
     linkedin_link: { type: String, default: '' },
+    
     registration_id: { type: String, required: true, unique: true }, 
+
 }, { 
     timestamps: true,
     toJSON: { 
@@ -27,6 +32,7 @@ const TeamSchema = new mongoose.Schema({
             ret.created_at = ret.createdAt.toISOString();
             ret.updated_at = ret.updatedAt.toISOString();
             delete ret._id;
+            delete ret.__v;
             delete ret.createdAt;
             delete ret.updatedAt;
         }

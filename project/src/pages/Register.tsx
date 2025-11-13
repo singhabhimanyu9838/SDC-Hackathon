@@ -1,9 +1,10 @@
-import { useState, FormEvent, useRef } from 'react';
-import { Users, CheckCircle, Loader2, Upload } from 'lucide-react'; 
+import { useState, FormEvent } from 'react';
+import { Users, CheckCircle, Loader2, Link } from 'lucide-react'; 
 import { TeamMember, Team } from '../types';
 
-// NOTE: We do not use the VITE_API_BASE_URL environment variable here 
-// because we are using a direct fetch, but we MUST use the correct address.
+// Access the VITE environment variable for the backend base URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -11,8 +12,7 @@ export default function Register() {
   const [registrationId, setRegistrationId] = useState('');
   const [error, setError] = useState('');
   
-  // Ref for the file input element
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Removed: fileInputRef (No longer needed)
 
   // State variables use camelCase for standard React readability
   const [formData, setFormData] = useState({
@@ -22,6 +22,7 @@ export default function Register() {
     phone: '',
     collegeName: '',
     projectIdea: '',
+    ideaPptLink: '', 
     githubLink: '',
     linkedinLink: '',
   });
@@ -59,19 +60,8 @@ export default function Register() {
     setLoading(true);
     setError('');
     
-    const pptFile = fileInputRef.current?.files?.[0];
+    // Removed: pptFile validation and checks
 
-    // Basic file validation
-    if (!pptFile) {
-        setError('Please upload your Project Idea Document (PDF).');
-        setLoading(false);
-        return;
-    }
-    if (pptFile.type !== 'application/pdf') {
-        setError('Only PDF files are allowed for the Project Idea Document.');
-        setLoading(false);
-        return;
-    }
     
     // --- MAPPING STATE KEYS TO MONGOOSE SCHEMA KEYS ---
     const fieldMapping = {
@@ -81,43 +71,34 @@ export default function Register() {
         phone: 'phone',
         collegeName: 'college_name',
         projectIdea: 'project_idea',
+        ideaPptLink: 'idea_ppt_link', // Mapped new link field
         githubLink: 'github_link',
         linkedinLink: 'linkedin_link',
     };
     // ----------------------------------------------------
     
-    // --- CONVERTING TO FormData for File Upload ---
-    const formDataPayload = new FormData();
+    // --- CONVERTING TO JSON SUBMISSION ---
+    const submissionData: Record<string, any> = {};
 
-    // Append file first (key must match 'ideaPptFile' used by Multer on the backend)
-    formDataPayload.append('ideaPptFile', pptFile); 
-
-    // 🔑 CRITICAL FIX: Iterate over formData and append using the snake_case key
+    // Map all fields from camelCase state to snake_case backend keys
     Object.entries(formData).forEach(([camelKey, value]) => {
         const snakeKey = fieldMapping[camelKey as keyof typeof fieldMapping];
-        formDataPayload.append(snakeKey, value);
+        submissionData[snakeKey] = value;
     });
+    
+    // Attach the team members array
+    submissionData.team_members = teamMembers.filter(m => m.name && m.email);
 
-    // Append team members as a JSON string
-    formDataPayload.append('team_members', JSON.stringify(teamMembers.filter(m => m.name && m.email)));
-
-//     try {
-//         // 🛑 FINAL DEPLOYMENT FIX: Use the correct backend URL
-//         const response = await fetch('https://sdc-hackathon-2-0.onrender.com/api/teams', {
-//             method: 'POST',
-//             body: formDataPayload, // Pass FormData directly, without Content-Type header
-//         });
-try {
-        // 🛑 FINAL DEPLOYMENT FIX: Use the correct backend URL
-        const response = await fetch('http://localhost:3000/api/teams', {
+    try {
+        // Sending JSON payload to the base API URL
+        const response = await fetch(`${API_BASE_URL}/teams`, {
             method: 'POST',
-            body: formDataPayload, // Pass FormData directly, without Content-Type header
+            headers: { 'Content-Type': 'application/json' }, // CRITICAL: JSON header required
+            body: JSON.stringify(submissionData), 
         });
-
 
         if (!response.ok) {
             const errorData = await response.json();
-            // This catches the Mongoose validation error message if the mapping failed
             throw new Error(errorData.message || 'Failed to register team.');
         }
 
@@ -132,12 +113,11 @@ try {
         phone: '',
         collegeName: '',
         projectIdea: '',
+        ideaPptLink: '', // Reset the new field
         githubLink: '',
         linkedinLink: '',
       });
-      if (fileInputRef.current) {
-          fileInputRef.current.value = ''; // Clear file input
-      }
+      // Removed fileInputRef clear
       setTeamMembers([{ name: '', email: '' }]);
 
     } catch (err) {
@@ -346,23 +326,23 @@ try {
               />
             </div>
 
-            {/* --- NEW INPUT FIELD: PROJECT IDEA PPT FILE --- */}
+            {/* --- NEW INPUT FIELD: PROJECT IDEA LINK --- */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Project Idea Document (PDF only) *
+                Project Idea Document Link (Drive/GitHub/Figma URL) *
               </label>
-              <div className="flex items-center space-x-4 p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700">
+              <div className="relative">
+                <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
-                  type="file"
-                  name="ideaPptFile"
-                  ref={fileInputRef} // Attach the ref
-                  required // Make the file mandatory for submission
-                  accept=".pdf" // Restrict file types
-                  className="flex-1 text-sm text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300"
+                  type="url"
+                  name="ideaPptLink" // 🔑 Uses the new field name
+                  required
+                  value={formData.ideaPptLink}
+                  onChange={handleInputChange}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://drive.google.com/..."
                 />
-                <Upload className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </div>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Max file size: 10MB. Must be PDF format.</p>
             </div>
             {/* --- END NEW INPUT FIELD --- */}
 

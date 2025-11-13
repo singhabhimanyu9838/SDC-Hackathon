@@ -1,93 +1,43 @@
-// server/routes/teams.js - FINAL VERIFIED CODE
+// server/routes/teams.js - FINAL FUNCTIONAL CODE FOR LINK SUBMISSION
 
 const express = require('express');
 const Team = require('../models/Team');
 const authMiddleware = require('../middleware/auth');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+// Removed: multer, path, fs as we are no longer handling file uploads
 const { sendRegistrationConfirmation } = require('../services/emailService'); 
 
 const router = express.Router();
 
 const generateRegistrationId = () => { return `SDC-HACK-${Date.now()}`; };
 
-// --- Multer Configuration: DISK STORAGE ---
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = path.join(__dirname, '..', 'uploads');
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath);
-        }
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') {
-            cb(null, true);
-        } else {
-            cb(new Error('Only PDF files are allowed!'), false);
-        }
-    }
-});
-// -----------------------------------------------------------------------
-
-
-// POST /api/teams - PUBLIC: Create a new team registration (Fixed for Deployment Timeout)
-router.post('/', upload.single('ideaPptFile'), async (req, res) => {
-    let uploadedFilePath = req.file ? req.file.path : null;
-    
+// POST /api/teams - PUBLIC: Create a new team registration (Accepts JSON payload)
+// This route now expects the frontend to send data as application/json.
+router.post('/', async (req, res) => {
     try {
         const teamData = req.body;
         
-        // 1. VALIDATION AND PARSING
-        if (!req.file) {
-            return res.status(400).json({ message: 'Project Idea Document (PDF) is required.' });
-        }
-        
-        if (teamData.team_members && typeof teamData.team_members === 'string') {
-            try {
-                teamData.team_members = JSON.parse(teamData.team_members);
-            } catch (e) {
-                return res.status(400).json({ message: 'Invalid team member data format.' });
-            }
-        } else {
-            teamData.team_members = []; 
-        }
+        // 1. Validation/Cleanup (Ensure team_members is an array)
+        if (!Array.isArray(teamData.team_members)) {
+            teamData.team_members = [];
+        }
 
         // 2. Populate MongoDB fields
-        teamData.idea_ppt_path = uploadedFilePath; 
         teamData.registration_id = generateRegistrationId();
         
         // 3. Save to MongoDB (Must await the save)
         const newTeam = new Team(teamData);
         await newTeam.save();
 
-        // 🔑 4. NON-BLOCKING EMAIL: Trigger the email without 'await'. This is the fix 
-        // for the submission timeout error (it runs in the background).
+        // 🔑 4. NON-BLOCKING EMAIL: Trigger the email without 'await'. This prevents the timeout/hanging error.
         sendRegistrationConfirmation(
             newTeam.email, 
             newTeam.team_name, 
             newTeam.registration_id
         ); 
 
-        res.status(201).json(newTeam.toJSON()); // Respond instantly
+        res.status(201).json(newTeam.toJSON()); // Respond instantly to the client
 
     } catch (error) {
-        // ⚠️ CRITICAL CLEANUP: Delete the uploaded file if DB save fails
-        if (uploadedFilePath && fs.existsSync(uploadedFilePath)) {
-            fs.unlinkSync(uploadedFilePath);
-            console.log(`Cleaned up orphaned file: ${uploadedFilePath}`);
-        }
-        
         console.error('CRITICAL REGISTRATION ERROR:', error);
         
         if (error.name === 'ValidationError') {
@@ -104,12 +54,9 @@ router.get('/', authMiddleware, async (req, res) => {
         const teams = await Team.find().sort({ createdAt: -1 });
         const cleanTeams = teams.map(team => team.toJSON());
         
-        // Generate the download URL for the frontend
+        // Map the stored link to the download field for the frontend
         const teamsWithDownloadUrl = cleanTeams.map(team => {
-            if (team.idea_ppt_path) {
-                const filename = path.basename(team.idea_ppt_path);
-                team.idea_ppt_download_url = `/api/teams/pdf/${filename}`; 
-            }
+            team.idea_ppt_download_url = team.idea_ppt_link; 
             return team;
         });
 
@@ -121,31 +68,12 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-// GET /api/teams/pdf/:filename - PROTECTED: Download PDF file
-router.get('/pdf/:filename', authMiddleware, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'uploads', req.params.filename);
-    
-    if (fs.existsSync(filePath)) {
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename=' + req.params.filename);
-        res.sendFile(filePath);
-    } else {
-        res.status(404).json({ message: 'File not found' });
-    }
-});
+// REMOVED: The GET /api/teams/pdf/:filename route is no longer included.
 
-// DELETE /api/teams/:id - PROTECTED: Delete a team (needs cleanup)
+// DELETE /api/teams/:id - PROTECTED: Delete a team
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
-        const team = await Team.findById(req.params.id);
-        if (!team) return res.status(404).json({ message: 'Team not found' });
-
-        // 1. Delete the local file first
-        if (team.idea_ppt_path && fs.existsSync(team.idea_ppt_path)) {
-            fs.unlinkSync(team.idea_ppt_path);
-        }
-
-        // 2. Delete the DB record
+        // No file cleanup needed
         await Team.findByIdAndDelete(req.params.id);
 
         res.status(204).send();
