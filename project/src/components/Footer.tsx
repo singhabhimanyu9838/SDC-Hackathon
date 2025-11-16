@@ -25,7 +25,7 @@ export default function Footer() {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com/company/sdc-club"
+                href="https://www.linkedin.com/company/student-developer-club-rec-banda/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-gray-800 rounded-lg hover:bg-amber-600 hover:text-gray-950 transition-colors text-yellow-400"
@@ -33,7 +33,7 @@ export default function Footer() {
                 <Link className="h-5 w-5" />
               </a>
               <a
-                href="https://instagram.com/sdc_club"
+                href="https://www.instagram.com/student_developer_club/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-gray-800 rounded-lg hover:bg-amber-600 hover:text-gray-950 transition-colors text-yellow-400"
@@ -41,7 +41,7 @@ export default function Footer() {
                 <Skull className="h-5 w-5" />
               </a>
               <a
-                href="mailto:contact@sdc.club"
+                href="sdc2021recbanda@gmail.com"
                 className="p-2 bg-gray-800 rounded-lg hover:bg-amber-600 hover:text-gray-950 transition-colors text-yellow-400"
               >
                 <Mail className="h-5 w-5" />
@@ -78,9 +78,9 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-lg mb-4 text-yellow-400">Dispatch</h3>
             <ul className="space-y-2 text-gray-400">
-              <li>Pigeon Mail: contact@sdc.club</li>
+              <li>Pigeon Mail: sdc2021recbanda@gmail.com</li>
               <li>Ship's Horn: +91 XXXXX XXXXX</li>
-              <li>Home Port: Your College Name</li>
+              <li>Home Port: Rajkiya Engineering College Banda</li>
             </ul>
           </div>
         </div>

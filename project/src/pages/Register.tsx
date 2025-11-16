@@ -128,31 +128,31 @@ export default function Register() {
       <div className="min-h-screen bg-gray-950 text-gray-100 pt-20 flex items-center justify-center px-4">
         <div className="max-w-2xl w-full bg-gray-800 rounded-2xl shadow-xl p-8 text-center border border-amber-800">
           <div className="w-20 h-20 bg-amber-900/40 border border-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Skull className="w-12 h-12 text-yellow-400" />
+            <CheckCircle className="w-12 h-12 text-yellow-400" />
           </div>
           <h2 className="text-3xl font-bold mb-4 text-yellow-400">
-            Crew Roll Signed!
+            Registration Successful!
           </h2>
           <p className="text-gray-300 mb-6">
-            Your crew has been successfully registered for the Great Code Voyage.
+            Your team has been successfully registered for the Hackathon.
           </p>
           <div className="bg-gray-700/50 border-2 border-amber-600 rounded-xl p-6 mb-6">
-            <p className="text-sm text-gray-400 mb-2">Ship's Manifest ID</p>
+            <p className="text-sm text-gray-400 mb-2">Registration ID</p>
             <p className="text-2xl font-bold text-yellow-400 font-serif">
               {registrationId}
             </p>
             <p className="text-sm text-gray-400 mt-2">
-              Keep this artifact safe for inspection.
+              Please save this ID for your reference.
             </p>
             </div>
           <p className="text-gray-300 mb-6">
-            A final dispatch has been sent to the Captain's email. Prepare to set sail!
+            A confirmation email has been sent to your email address.
           </p>
           <button
             onClick={() => setSuccess(false)}
             className="px-8 py-3 bg-amber-600 text-gray-950 rounded-xl font-semibold hover:shadow-lg transition-all"
           >
-            Register Another Crew
+            Register Another Team
           </button>
         </div>
         </div>
@@ -164,10 +164,10 @@ export default function Register() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-serif font-bold mb-4 text-yellow-400">
-            Crew Roll Enrollment
+            Team Registration
           </h1>
           <p className="text-gray-400">
-            Sign your name to the manifest and prepare for the voyage.
+            Fill out the form below to enroll your team for the hackathon.
           </p>
         </div>
 
@@ -181,7 +181,7 @@ export default function Register() {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                Crew Name (Team Name) *
+                Team Name *
               </label>
               <input
                 type="text"
@@ -197,7 +197,7 @@ export default function Register() {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                  Captain's Name (Leader) *
+                  Team Leader Name *
                 </label>
                 <input
                   type="text"
@@ -212,7 +212,7 @@ export default function Register() {
 
               <div>
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                  Captain's Dispatch Address (Email) *
+                  Leader Email *
                 </label>
                 <input
                   type="email"
@@ -229,7 +229,7 @@ export default function Register() {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                  Ship's Horn Frequency (Phone) *
+                  Phone Number *
                 </label>
                 <input
                   type="tel"
@@ -244,7 +244,7 @@ export default function Register() {
 
               <div>
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                  Ship's Registry (College Name) *
+                  College Name *
                 </label>
                 <input
                   type="text"
@@ -261,7 +261,7 @@ export default function Register() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                  Additional Crew Members (Max 3 Swashbucklers)
+                  Team Members (Max 3 additional members)
                 </label>
                 {teamMembers.length < 3 && (
                   <button
@@ -308,7 +308,7 @@ export default function Register() {
 
             <div>
               <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                Treasure Map Description (Project Idea) *
+                Project Idea Description *
               </label>
               <textarea
                 name="projectIdea"
@@ -317,14 +317,14 @@ export default function Register() {
                 onChange={handleInputChange}
                 rows={4}
                 className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500 resize-none"
-                placeholder="Brief the Captain on your plan for plunder..."
+                placeholder="Briefly describe your project idea..."
               />
             </div>
 
             {/* --- NEW INPUT FIELD: PROJECT IDEA LINK --- */}
             <div>
               <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                Artifact Location Link (Drive/GitHub/Figma URL) *
+                Project Document Link (Drive/GitHub/Figma URL) *
               </label>
               <div className="relative">
                 <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-yellow-400" />
@@ -344,7 +344,7 @@ export default function Register() {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                  GitHub Logbook (Optional)
+                  GitHub Profile Link (Optional)
                 </label>
                 <input
                   type="url"
@@ -358,7 +358,7 @@ export default function Register() {
 
               <div>
                 <label className="block text-sm font-semibold text-yellow-300 mb-2">
-                 LinkedIn Profile (Optional)
+                  LinkedIn Profile Link (Optional)
                 </label>
                 <input
                   type="url"
@@ -381,12 +381,12 @@ export default function Register() {
               {loading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Signing the Roll...
+                  Registering...
                 </>
               ) : (
                 <>
                   <Ship className="h-5 w-5" />
-                  Sign the Crew Roll
+                  Submit Registration
                 </>
               )}
             </button>
