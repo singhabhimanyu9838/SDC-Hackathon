@@ -145,15 +145,15 @@ export default function Home() {
       {/* 🏴‍☠️ 1. BANNER/HERO SECTION */}
       <section id="home-section" className="relative h-[90vh] overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center">
-          <video autoPlay muted loop id="background-video" className="w-full h-full object-cover">
-            <source src="../public/assets/videos/pirate_back.mov" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="absolute inset-0 bg-gray-950 opacity-60"></div>
+             <video autoPlay muted loop id="background-video" className="w-full h-full object-cover">
+                <source src="/assets/videos/pirate_back.mov" type="video/mp4" /> {/* Path uses /assets/ */}
+                Your browser does not support the video tag.
+            </video>
+             <div className="absolute inset-0 bg-gray-950 opacity-60"></div>
         </div>
 
         <div className="relative z-10 pt-24 pb-16 px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center items-center">
-          {/* <img src="/assets/img/new_assets/WhatsApp_Image_2025-04-03_at_22.32.21_0297acc1-removebg-preview.png" alt="Hackfest Logo" className="w-56 mb-8 mt-12 md:mt-0" /> */}
+         
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-serif font-bold mb-4 
 text-amber-600 dark:text-yellow-400 tracking-wide drop-shadow-xl">
   HACKFEST2.0
