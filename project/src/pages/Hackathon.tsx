@@ -7,7 +7,7 @@ export default function Hackathon() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              SDC Hackathon 2025
+              SDC Hackfest2.0 2025
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               A 24-hour innovation marathon bringing together brilliant minds to solve real-world problems
@@ -53,10 +53,10 @@ export default function Hackathon() {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-white mb-16">
             <div className="flex items-center mb-6">
               <Lightbulb className="h-10 w-10 mr-4" />
-              <h2 className="text-3xl font-bold">Theme: AI for Social Good</h2>
+              <h2 className="text-3xl font-bold">Theme: Releasing Soon... </h2>
             </div>
             <p className="text-lg text-blue-100 mb-4">
-              Build innovative AI-powered solutions that address real-world social challenges and create
+              Build innovative solutions that address real-world social challenges and create
               a positive impact on society. Focus areas include:
             </p>
             <div className="grid md:grid-cols-2 gap-4">
@@ -241,23 +241,23 @@ export default function Hackathon() {
             <div className="text-center mb-12">
               <Trophy className="h-16 w-16 mx-auto mb-4" />
               <h2 className="text-4xl font-bold mb-4">Prizes & Rewards</h2>
-              <p className="text-xl text-white/90">Total prize pool worth ₹1,00,000+</p>
+              <p className="text-xl text-white/90">Total prize pool worth 20,000+</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {[
                 {
                   place: '1st Place',
-                  prize: '₹50,000',
-                  extras: ['Trophy & Certificates', '3-month Internship', 'Swag Kit'],
+                  prize: 'Goodies',
+                  extras: ['Trophy & Certificates','Mentorship Session', 'Swag Kit'],
                 },
                 {
                   place: '2nd Place',
-                  prize: '₹30,000',
-                  extras: ['Trophy & Certificates', '1-month Internship', 'Swag Kit'],
+                  prize: '₹',
+                  extras: ['Trophy & Certificates','Mentorship Session', 'Swag Kit'],
                 },
                 {
                   place: '3rd Place',
-                  prize: '₹20,000',
+                  prize: '₹',
                   extras: ['Trophy & Certificates', 'Mentorship Session', 'Swag Kit'],
                 },
               ].map((winner, index) => (
@@ -294,7 +294,7 @@ export default function Hackathon() {
               <ul className="space-y-4 text-gray-700 dark:text-gray-300">
                 <li className="flex items-start">
                   <CheckCircle className="h-6 w-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                  <span>Team size: 2-4 members (solo participation not allowed)</span>
+                  <span>Team size: 2-4 members (Atleast one girl compulsory)</span>
                 </li>
                 <li className="flex items-start">
                   <CheckCircle className="h-6 w-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" />

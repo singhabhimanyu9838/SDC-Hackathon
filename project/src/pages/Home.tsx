@@ -39,7 +39,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
-              SDC Hackathon 2025
+              SDC Hackfest2.0 2025
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Join us for an epic 24-hour coding marathon where innovation meets creativity
@@ -92,7 +92,7 @@ export default function Home() {
               {
                 icon: Trophy,
                 title: 'Amazing Prizes',
-                description: 'Win exciting prizes worth ₹1,00,000+ including cash rewards, gadgets, and internship opportunities',
+                description: 'Win exciting prizes  including cash rewards, gadgets, and internship opportunities',
                 gradient: 'from-yellow-400 to-orange-500',
               },
               {
@@ -135,12 +135,12 @@ export default function Home() {
             </div>
             <div className="p-6">
               <Users className="h-12 w-12 mx-auto mb-4" />
-              <div className="text-4xl font-bold mb-2">500+ Teams</div>
-              <div className="text-blue-100">From across the nation</div>
+              <div className="text-4xl font-bold mb-2"> Teams</div>
+              <div className="text-blue-100">From across the campus</div>
             </div>
             <div className="p-6">
               <Trophy className="h-12 w-12 mx-auto mb-4" />
-              <div className="text-4xl font-bold mb-2">₹1L+ Prizes</div>
+              <div className="text-4xl font-bold mb-2">Amazing Prizes</div>
               <div className="text-blue-100">To be won</div>
             </div>
           </div>
@@ -156,8 +156,8 @@ export default function Home() {
             {[
               {
                 icon: Target,
-                title: 'Theme: AI for Social Good',
-                description: 'Build innovative AI-powered solutions that address real-world social challenges and make a positive impact on society',
+                title: 'Theme: Releasing Soon...',
+                description: 'Build innovative  solutions that address real-world social challenges and make a positive impact on society',
               },
               {
                 icon: Zap,

@@ -313,7 +313,7 @@ export default function Register() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Project Idea Title *
+                Project Idea Description *
               </label>
               <textarea
                 name="projectIdea"
@@ -329,7 +329,7 @@ export default function Register() {
             {/* --- NEW INPUT FIELD: PROJECT IDEA LINK --- */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Project Idea Document Link (Drive/GitHub/Figma URL) *
+                Project Idea Document Link (Drive/Canva/GitHub/Figma URL) *
               </label>
               <div className="relative">
                 <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
