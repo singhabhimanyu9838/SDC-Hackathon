@@ -1,0 +1,20 @@
+/* Note: Using .module.css ensures these styles only apply when imported */
+
+.sectionCard {
+    /* Custom transition to enhance the Tailwind classes */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.missionCard {
+    /* Defining the custom text gradient for a modern effect */
+    background-color: #0f172a; /* Fallback for dark background */
+}
+
+/* Custom gradient clipping for the main title gradient */
+.textGradient {
+    background: linear-gradient(to right, #3b82f6, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}

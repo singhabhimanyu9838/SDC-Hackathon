@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🏴‍☠️ Apply Pirate Theme Base Styles */
+body {
+    background-color: #0a0a0a; /* Deep Mahogany Black */
+    font-family: 'serif'; /* Use a serif font for aged documents feel */
+    color: #fcfcfc; /* Light off-white */
+}
+
+/* Custom utility for the treasure accent color */
+.text-treasure-gold {
+    color: #ffc300;
+}
+.bg-treasure-gold {
+    background-color: #ffc300;
+}
+.border-brass {
+    border-color: #9333ea; /* Purple for a brass hue */
+}

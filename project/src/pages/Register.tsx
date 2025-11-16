@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { Users, CheckCircle, Loader2, Link } from 'lucide-react'; 
+import { Users, CheckCircle, Loader2, Link, Skull, Ship, Anchor, Mail, Phone, Code2 } from 'lucide-react'; 
 import { TeamMember, Team } from '../types';
 
 // Access the VITE environment variable for the backend base URL
@@ -12,8 +12,6 @@ export default function Register() {
   const [registrationId, setRegistrationId] = useState('');
   const [error, setError] = useState('');
   
-  // Removed: fileInputRef (No longer needed)
-
   // State variables use camelCase for standard React readability
   const [formData, setFormData] = useState({
     teamName: '',
@@ -22,7 +20,7 @@ export default function Register() {
     phone: '',
     collegeName: '',
     projectIdea: '',
-    ideaPptLink: '', 
+    ideaPptLink: '', // NEW STATE FIELD for the document link
     githubLink: '',
     linkedinLink: '',
   });
@@ -31,7 +29,7 @@ export default function Register() {
     { name: '', email: '' },
   ]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -60,10 +58,8 @@ export default function Register() {
     setLoading(true);
     setError('');
     
-    // Removed: pptFile validation and checks
-
-    
     // --- MAPPING STATE KEYS TO MONGOOSE SCHEMA KEYS ---
+    // This mapping ensures the backend receives snake_case required by Mongoose
     const fieldMapping = {
         teamName: 'team_name',
         teamLeaderName: 'team_leader_name',
@@ -129,35 +125,34 @@ export default function Register() {
     
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-black pt-20 flex items-center justify-center px-4">
-        <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center">
-          <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
+      <div className="min-h-screen bg-gray-950 text-gray-100 pt-20 flex items-center justify-center px-4">
+        <div className="max-w-2xl w-full bg-gray-800 rounded-2xl shadow-xl p-8 text-center border border-amber-800">
+          <div className="w-20 h-20 bg-amber-900/40 border border-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Skull className="w-12 h-12 text-yellow-400" />
           </div>
-          <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
-            Registration Successful!
+          <h2 className="text-3xl font-bold mb-4 text-yellow-400">
+            Crew Roll Signed!
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Your team has been successfully registered for SDC Hackathon 2025.
+          <p className="text-gray-300 mb-6">
+            Your crew has been successfully registered for the Great Code Voyage.
           </p>
-          <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-6">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Your Registration ID</p>
-            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-mono">
+          <div className="bg-gray-700/50 border-2 border-amber-600 rounded-xl p-6 mb-6">
+            <p className="text-sm text-gray-400 mb-2">Ship's Manifest ID</p>
+            <p className="text-2xl font-bold text-yellow-400 font-serif">
               {registrationId}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Please save this ID for future reference
+            <p className="text-sm text-gray-400 mt-2">
+              Keep this artifact safe for inspection.
             </p>
             </div>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            A confirmation email has been sent to {formData.email || 'your email address'}. Please check
-            your inbox for further details.
+          <p className="text-gray-300 mb-6">
+            A final dispatch has been sent to the Captain's email. Prepare to set sail!
           </p>
           <button
             onClick={() => setSuccess(false)}
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+            className="px-8 py-3 bg-amber-600 text-gray-950 rounded-xl font-semibold hover:shadow-lg transition-all"
           >
-            Register Another Team
+            Register Another Crew
           </button>
         </div>
         </div>
@@ -165,28 +160,28 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-black pt-20 pb-16">
+    <div className="min-h-screen bg-gray-950 text-gray-100 pt-20 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Team Registration
+          <h1 className="text-4xl font-serif font-bold mb-4 text-yellow-400">
+            Crew Roll Enrollment
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Fill in the details to register your team for SDC Hackathon 2025
+          <p className="text-gray-400">
+            Sign your name to the manifest and prepare for the voyage.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+        <form onSubmit={handleSubmit} className="bg-gray-800 rounded-2xl shadow-xl p-8 border border-amber-800">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400">
+            <div className="mb-6 p-4 bg-red-900/40 border border-red-600 rounded-lg text-red-400">
               {error}
               </div>
           )}
 
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Team Name *
+              <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                Crew Name (Team Name) *
               </label>
               <input
                 type="text"
@@ -194,15 +189,15 @@ export default function Register() {
                 required
                 value={formData.teamName}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your team name"
+                className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
+                placeholder="The Sea Dogs"
               />
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Team Leader Name *
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                  Captain's Name (Leader) *
                 </label>
                 <input
                   type="text"
@@ -210,14 +205,14 @@ export default function Register() {
                   required
                   value={formData.teamLeaderName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Full name"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
+                  placeholder="Capt. Edward Teach"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Email *
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                  Captain's Dispatch Address (Email) *
                 </label>
                 <input
                   type="email"
@@ -225,16 +220,16 @@ export default function Register() {
                   required
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="email@example.com"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
+                  placeholder="email@blackpearl.com"
                 />
               </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Phone Number *
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                  Ship's Horn Frequency (Phone) *
                 </label>
                 <input
                   type="tel"
@@ -242,14 +237,14 @@ export default function Register() {
                   required
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
                   placeholder="+91 XXXXX XXXXX"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  College Name *
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                  Ship's Registry (College Name) *
                 </label>
                 <input
                   type="text"
@@ -257,36 +252,36 @@ export default function Register() {
                   required
                   value={formData.collegeName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Your college name"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
+                  placeholder="Royal Naval Academy"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Team Members (up to 3 additional members)
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                  Additional Crew Members (Max 3 Swashbucklers)
                 </label>
                 {teamMembers.length < 3 && (
                   <button
                     type="button"
                     onClick={addMember}
-                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                    className="text-sm text-amber-600 hover:underline"
                   >
-                    + Add Member
+                    + Recruit Swashbuckler
                   </button>
                 )}
               </div>
               <div className="space-y-4">
                 {teamMembers.map((member, index) => (
-                  <div key={index} className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <div key={index} className="grid md:grid-cols-2 gap-4 p-4 bg-gray-700/50 rounded-lg">
                     <input
                       type="text"
                       placeholder="Member name"
                       value={member.name}
                       onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
-                      className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="px-4 py-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
                     />
                     <div className="flex gap-2">
                       <input
@@ -294,13 +289,13 @@ export default function Register() {
                         placeholder="Member email"
                         value={member.email}
                         onChange={(e) => handleMemberChange(index, 'email', e.target.value)}
-                        className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-4 py-2 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
                       />
                       {teamMembers.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeMember(index)}
-                          className="px-3 py-2 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors"
+                          className="px-3 py-2 bg-red-900/40 text-red-400 rounded-lg hover:bg-red-900/60 transition-colors"
                         >
                           Remove
                         </button>
@@ -312,8 +307,8 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Project Idea Description *
+              <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                Treasure Map Description (Project Idea) *
               </label>
               <textarea
                 name="projectIdea"
@@ -321,56 +316,56 @@ export default function Register() {
                 value={formData.projectIdea}
                 onChange={handleInputChange}
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                placeholder="Brief description of your project idea (optional at this stage)"
+                className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500 resize-none"
+                placeholder="Brief the Captain on your plan for plunder..."
               />
             </div>
 
             {/* --- NEW INPUT FIELD: PROJECT IDEA LINK --- */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Project Idea Document Link (Drive/Canva/GitHub/Figma URL) *
+              <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                Artifact Location Link (Drive/GitHub/Figma URL) *
               </label>
               <div className="relative">
-                <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-yellow-400" />
                 <input
                   type="url"
                   name="ideaPptLink" // 🔑 Uses the new field name
                   required
                   value={formData.ideaPptLink}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="https://drive.google.com/..."
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
+                  placeholder="https://github.com/project-artifact"
                 />
               </div>
             </div>
-            {/* --- END NEW INPUT FIELD --- */}
+            
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  GitHub Profile (Optional)
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                  GitHub Logbook (Optional)
                 </label>
                 <input
                   type="url"
                   name="githubLink"
                   value={formData.githubLink}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
                   placeholder="https://github.com/username"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  LinkedIn Profile (Optional)
+                <label className="block text-sm font-semibold text-yellow-300 mb-2">
+                 LinkedIn Profile (Optional)
                 </label>
                 <input
                   type="url"
                   name="linkedinLink"
                   value={formData.linkedinLink}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-600 bg-gray-900 text-gray-100 focus:ring-yellow-500 focus:border-yellow-500"
                   placeholder="https://linkedin.com/in/username"
                 />
               </div>
@@ -381,17 +376,17 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+              className="px-8 py-4 bg-amber-600 text-gray-950 rounded-xl font-semibold text-lg hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
             >
               {loading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  Registering...
+                  Signing the Roll...
                 </>
               ) : (
                 <>
-                  <Users className="h-5 w-5" />
-                  Register Team
+                  <Ship className="h-5 w-5" />
+                  Sign the Crew Roll
                 </>
               )}
             </button>
